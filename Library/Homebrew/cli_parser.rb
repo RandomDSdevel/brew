@@ -22,6 +22,11 @@ module Homebrew
 
       def initialize(&block)
         @parser = OptionParser.new
+        # Undefine `OptionParser`'s pre-existing `version` member to allow
+        # Homebrew sub-commands (such as `uninstall`; see
+        # https://github.com/Homebrew/brew/issues/5438) that don't have a
+        # `--version` flag to diagnose its (mis)use:
+        @parser.instance_eval { undef version }
         Homebrew.args = OpenStruct.new
         # undefine tap to allow --tap argument
         Homebrew.args.instance_eval { undef tap }
